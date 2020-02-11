@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Index197511 website</title>
-    <link>http://index197511.github.io/</link>
+    <link>https://index197511.github.io/blog/</link>
     <description>Recent content on Index197511 website</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
     <lastBuildDate>Tue, 11 Feb 2020 16:12:25 +0900</lastBuildDate>
     
-	<atom:link href="http://index197511.github.io/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://index197511.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Firstpost</title>
-      <link>http://index197511.github.io/2020/02/11/firstpost/</link>
+      <link>https://index197511.github.io/blog/2020/02/11/firstpost/</link>
       <pubDate>Tue, 11 Feb 2020 16:12:25 +0900</pubDate>
       
-      <guid>http://index197511.github.io/2020/02/11/firstpost/</guid>
+      <guid>https://index197511.github.io/blog/2020/02/11/firstpost/</guid>
       <description></description>
     </item>
     

@@ -1,4 +1,4 @@
-baseURL = "https://index197511.github.io"
+baseURL = "https://index197511.github.io/blog/"
 title = "Index197511 website"
 canonifyurls = true
 paginate = 3
