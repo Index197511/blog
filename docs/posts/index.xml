@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Index197511 website</title>
+    <link>http://index197511.github.io/posts/</link>
+    <description>Recent content in Posts on Index197511 website</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-jp</language>
+    <lastBuildDate>Tue, 11 Feb 2020 16:12:25 +0900</lastBuildDate>
+    
+	<atom:link href="http://index197511.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Firstpost</title>
+      <link>http://index197511.github.io/2020/02/11/firstpost/</link>
+      <pubDate>Tue, 11 Feb 2020 16:12:25 +0900</pubDate>
+      
+      <guid>http://index197511.github.io/2020/02/11/firstpost/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

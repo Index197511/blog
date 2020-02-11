@@ -1,0 +1,31 @@
+baseURL = "http://index197511.github.io"
+title = "Index197511 website"
+canonifyurls = true
+paginate = 3
+theme = "hugo-sustain"
+publishDir = "docs"
+hasCJKLanguage = true
+languageCode = "ja-jp"
+
+[blackfriday]
+  extensions = ["hardLineBreak"]
+
+[permalinks]
+  posts = "/:year/:month/:day/:slug"
+
+[params]
+  author = "Index197511"
+  avatar = "avatar.jpg"
+  description = "Undergraduate CS. \nLikes Rust and Elm, Learning Kotlin."
+
+[params.social]
+  Github = "Index197511"
+  Email = "index197511.hiro@gmail.com"
+  Twitter = "1125__rui"
+
+[[menu.main]]
+  name = "post"
+  weight = 100
+  identifier = "post"
+  url = "/posts"
+
