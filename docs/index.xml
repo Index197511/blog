@@ -6,10 +6,19 @@
     <description>Recent content on Index197511 website</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
-    <lastBuildDate>Tue, 11 Feb 2020 16:12:25 +0900</lastBuildDate>
+    <lastBuildDate>Fri, 14 Feb 2020 20:46:35 +0900</lastBuildDate>
     
 	<atom:link href="https://index197511.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Koinを用いてDIする</title>
+      <link>https://index197511.github.io/blog/2020/02/14/koin%E3%82%92%E7%94%A8%E3%81%84%E3%81%A6di%E3%81%99%E3%82%8B/</link>
+      <pubDate>Fri, 14 Feb 2020 20:46:35 +0900</pubDate>
+      
+      <guid>https://index197511.github.io/blog/2020/02/14/koin%E3%82%92%E7%94%A8%E3%81%84%E3%81%A6di%E3%81%99%E3%82%8B/</guid>
+      <description>引数ありのViewModelをDIする際にDaggerを使用すると思った以上に手がかかるのでKoinを使用してみました。 実現したかったことは</description>
+    </item>
     
     <item>
       <title>Firstpost</title>
