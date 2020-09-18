@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Index197511" />
+    <meta name="description" content="Undergraduate CS. 
+Likes Rust and Elm, Learning Kotlin.">
+    <link rel="shortcut icon" type="image/x-icon" href="https://index197511.github.io/blog/img/favicon.ico">
+    <title>Dagger Hilt</title>
+    <meta name="generator" content="Hugo 0.40.1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://index197511.github.io/blog/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="https://index197511.github.io/blog/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="https://index197511.github.io/blog/posts">POST</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="https://index197511.github.io/blog/2020/09/18/dagger-hilt/">Dagger Hilt</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          September 18, 2020
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+<p>DIコンテナをKoinからDagger Hiltに変更しました。その際のTipsを書き残しておきます。</p>
+
+<h3 id="引数ありのviewmodelをfragmentへinjectする">引数ありのViewModelをFragmentへInjectする</h3>
+
+<ul>
+<li><p>注入されるFragmentに<code>@AndroidEntryPoint</code>のアノテーションを付与する。<br>これにより、注入されるFragmentを指定することができます。<br><br />
+あとはandroidxのFragment拡張を使用して<code>by viewModels&lt;&gt;()</code>で受け取りましょう。</p>
+
+<pre><code class="language-kotlin">// MainFragment.kt
+@AndroidEntryPoint
+class MainFragment : Fragment() {
+private val viewModel by viewModels&lt;MainViewModel&gt;()
+}
+</code></pre></li>
+
+<li><p>注入したいViewModelに<code>@ViewModelInject constructor()</code>を付与する。<br><br />
+これにより注入したいViewModelをオブジェクトグラフに登録することができます。</p>
+
+<pre><code class="language-kotlin">// MainViewModel.kt
+class MainViewModel @ViewModelInject constructor(
+private val repository: Repository
+) : ViewModel {
+...
+}
+</code></pre></li>
+
+<li><p>FragmentやViewModelを継承していない、自作のクラスは通常のDagger通り<code>@Inject constructor()</code>の付与でオブジェクトグラフに登録します。</p>
+
+<pre><code class="language-kotlin">// Repository.kt
+class Repository @Inject constructor() {
+...
+}
+</code></pre></li>
+
+<li><p>最後に忘れがちですが、Fragmentを描画しているActivityにも<code>@AndroidEntryPoint</code>を付与してあげてください。</p>
+
+<pre><code class="language-kotlin">// MainActivity.kt
+@AndroidEntryPoint
+class MainActivity : Activity() {
+...
+}
+</code></pre></li>
+</ul>
+
+<p>以上がFragmentに引数ありのViewModelを注入する一連の手順となります。<br />
+通常のDaggerと違い、ViewModel内にFactoryを書いたり、Moduleに<code>@ContributesAndroidInjector</code>を用いてゴニョゴニョする必要がなくなっており、<br />
+簡潔に書くことができると思います。</p>
+
+<h3 id="roomdatabaseのオブジェクトグラフへの登録">RoomDatabaseのオブジェクトグラフへの登録</h3>
+
+<ul>
+<li><p>RoomDatabaseをオブジェクトグラフに登録するためにModuleを作成します。</p>
+
+<pre><code class="language-kotlin">@Module
+@InstallIn(SingletonComponent::class)
+object MyDatabaseModule {
+@Provides
+@Singleton
+fun provideDatabase(application: Application): MySongDatabase {
+    return Room.databaseBuilder(application, MyDatabase::class.java, &quot;database-name&quot;)
+        .build()
+}
+
+@Provides
+@Singleton
+fun provideMyDatabaseDao(database: MyDatabase): MyDatabaseDao {
+    return database.myDatabaseDao()
+}
+}
+</code></pre></li>
+</ul>
+
+<p>こんな感じになります。Dagger Hiltではモジュールの宣言時に<code>@InstallIn</code>アノテーションをつける必要があります。<br><br />
+<code>@InstallIn(コンポーネント名)</code>を指定することで、各モジュールが使用されるまたはインストールされるコンポーネントを指定します。<br><br />
+ex) Fragmentに注入したい場合: <code>@IntallIn(FragmentComponent::class)</code><br></p>
+
+<p>今回はSingletonなRepositoryに注入したいので<code>@InstallIn(SingletonComponent::class)</code>を付与しています。</p>
+
+<p>ぜひ実際の<a href="https://github.com/Index197511/MySongBank" title="MySongBank">使用例</a>も見ていただけると幸いです。</p>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://index197511.github.io/blog/js/docs.min.js"></script>
+<script src="https://index197511.github.io/blog/js/main.js"></script>
+
+<script src="https://index197511.github.io/blog/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>
