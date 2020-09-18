@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Index197511 website</title>
@@ -6,10 +6,19 @@
     <description>Recent content on Index197511 website</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
-    <lastBuildDate>Fri, 14 Feb 2020 20:46:35 +0900</lastBuildDate>
+    <lastBuildDate>Fri, 18 Sep 2020 09:16:33 +0900</lastBuildDate>
     
 	<atom:link href="https://index197511.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Dagger Hilt</title>
+      <link>https://index197511.github.io/blog/2020/09/18/dagger-hilt/</link>
+      <pubDate>Fri, 18 Sep 2020 09:16:33 +0900</pubDate>
+      
+      <guid>https://index197511.github.io/blog/2020/09/18/dagger-hilt/</guid>
+      <description>DIコンテナをKoinからDagger Hiltに変更しました。その際のTipsを書き残しておきます。 引数ありのViewModelをFragm</description>
+    </item>
     
     <item>
       <title>Koinを用いてDIする</title>

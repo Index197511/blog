@@ -1,19 +1,14 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://index197511.github.io/blog/</loc>
-    <lastmod>2020-02-14T20:46:35+09:00</lastmod>
+    <loc>https://index197511.github.io/blog/2020/09/18/dagger-hilt/</loc>
+    <lastmod>2020-09-18T09:16:33+09:00</lastmod>
   </url>
   
   <url>
     <loc>https://index197511.github.io/blog/2020/02/14/koin%E3%82%92%E7%94%A8%E3%81%84%E3%81%A6di%E3%81%99%E3%82%8B/</loc>
-    <lastmod>2020-02-14T20:46:35+09:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://index197511.github.io/blog/posts/</loc>
     <lastmod>2020-02-14T20:46:35+09:00</lastmod>
   </url>
   
@@ -24,10 +19,24 @@
   
   <url>
     <loc>https://index197511.github.io/blog/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://index197511.github.io/blog/</loc>
+    <lastmod>2020-09-18T09:16:33+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://index197511.github.io/blog/posts/</loc>
+    <lastmod>2020-09-18T09:16:33+09:00</lastmod>
+    <priority>0</priority>
   </url>
   
   <url>
     <loc>https://index197511.github.io/blog/tags/</loc>
+    <priority>0</priority>
   </url>
   
 </urlset>
