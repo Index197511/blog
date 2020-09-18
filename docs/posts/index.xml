@@ -29,14 +29,5 @@
       <description>引数ありのViewModelをDIする際にDaggerを使用すると思った以上に手がかかるのでKoinを使用してみました。 実現したかったことは</description>
     </item>
     
-    <item>
-      <title>Firstpost</title>
-      <link>https://index197511.github.io/blog/2020/02/11/firstpost/</link>
-      <pubDate>Tue, 11 Feb 2020 16:12:25 +0900</pubDate>
-      
-      <guid>https://index197511.github.io/blog/2020/02/11/firstpost/</guid>
-      <description></description>
-    </item>
-    
   </channel>
 </rss>
