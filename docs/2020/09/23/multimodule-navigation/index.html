@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ja-jp">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Index197511" />
+    <meta name="description" content="Undergraduate CS. 
+Likes Rust and Elm, Learning Kotlin.">
+    <link rel="shortcut icon" type="image/x-icon" href="https://index197511.github.io/blog/img/favicon.ico">
+    <title>Multimodule Navigation</title>
+    <meta name="generator" content="Hugo 0.40.1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://index197511.github.io/blog/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="https://index197511.github.io/blog/"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="https://index197511.github.io/blog/posts">POST</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="https://index197511.github.io/blog/2020/09/23/multimodule-navigation/">Multimodule Navigation</a></strong>
+          </h3>
+        </div>
+        <div class="blog-title">
+          <h4>
+          September 23, 2020
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+<p>既存のアプリケーションをマルチモジュールにする際にNavigationComponentとFragmentを主体としたNavigationを定義したのでその際のTipsについて書き残しておきます。</p>
+
+<h3 id="モジュールの構成について">モジュールの構成について</h3>
+
+<p>モジュールの構成は次のとおりです<br />
+
+<figure>
+    
+        <img src="https://index197511.github.io/blog/img/module.png" />
+    
+    
+</figure>
+<br />
+- AppModule: DaggerHiltのエントリポイント(@HiltAndroidApp)を担っています。またRouterモジュールを作成し配布しています。<br />
+- RouterModule: マルチモジュール間でのNavigationComponentを用いたFragment間繊維を担っています。<br />
+- FeatureModule: 各feature毎のモジュールを集めています。主に画面ごとに一つのfeatureを切っています。<br />
+- DataModule: ローカル、リモートのリソースへのRepositoryを通したアクセスを公開しています。<br />
+- ModelModule: アプリケーション内で使用するモデルを定義しています。</p>
+
+<h3 id="マルチモジュール間でのfragmentを用いた画面遷移について">マルチモジュール間でのFragmentを用いた画面遷移について</h3>
+
+<p>マルチモジュール構成において、画面遷移は複雑なものです。<br />
+マルチモジュール構成において、自分と同階層または上階層のモジュールへのアクセスは不可能なため、シングルモジュール構成におけるNavigationGraphを用いた画面遷移は不可能となります。<br />
+そのため、画面遷移を担うRouterモジュールを別の階層に作成して、そこに画面遷移を担当してもらうこととします。</p>
+
+<p>1: Featureモジュール内の画面遷移をサポートしたいFeature内に画面遷移のためのInterfaceを定義する。</p>
+
+<pre><code class="language-kotlin">// FeatureARouter.kt in FeatureModule/FeatureA
+interface FeatureARouter {
+    fun navToFeatureB()
+}
+</code></pre>
+
+<pre><code class="language-kotlin">// FeatureBRouter.kt in FeatureModule/FeatureB
+interface FeatureBRouter {
+    fun navToFeatureA()
+}
+</code></pre>
+
+<p>2: Routerモジュール内に画面遷移のためのNavigationGraphを作成し、Appモジュール内のactivity_main.xmlから呼び出す。</p>
+
+<pre><code class="language-xml">&lt;!-- nav_graph.xml --&gt;
+&lt;navigation xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    app:startDestination=&quot;@id/featureAFragment&quot;
+    tools:ignore=&quot;UnusedNavigation&quot;&gt;
+
+    &lt;fragment
+        android:id=&quot;@+id/featureAFragment&quot;
+        android:name=&quot;me.example.feature.featureA.FeatureAFragment&quot;
+        tools:layout=&quot;@layout/featureA_fragment&quot;&gt;
+        &lt;action
+            android:id=&quot;@+id/action_featureA_to_featureB&quot;
+            app:destination=&quot;@id/featureBFragment&quot; /&gt;
+    &lt;/fragment&gt;
+
+    &lt;fragment
+        android:id=&quot;@+id/featureBFragment&quot;
+        android:name=&quot;me.example.feature.featureB.FeatureBFragment&quot;
+        android:label=&quot;featureB_fragment&quot;
+        tools:layout=&quot;@layout/featureB_fragment&quot;&gt;
+
+        &lt;action
+            android:id=&quot;@+id/action_featureB_to_featureA&quot;
+            app:destination=&quot;@id/featureAFragment&quot; /&gt;
+    &lt;/fragment&gt;
+&lt;/navigation&gt;
+</code></pre>
+
+<pre><code class="language-xml">&lt;!-- activity_main.xml --&gt;
+&lt;fragment
+    android:id=&quot;@+id/nav_host_fragment&quot;
+    android:name=&quot;androidx.navigation.fragment.NavHostFragment&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    app:defaultNavHost=&quot;true&quot;
+    app:navGraph=&quot;@navigation/nav_graph&quot;/&gt;
+</code></pre>
+
+<p>3: Routerモジュール内に1で定義したInterfaceを定義したクラスを作成する。</p>
+
+<pre><code class="language-kotlin">// Router.kt in RouterModule
+class FeatureAImpl @Inject constructor(
+    private val controller: NavController
+) : FeatureARouter {
+    override fun navToFeatureB() {
+        controller.navigate(R.id.action_featureA_to_featureB)
+    }
+}
+
+class FeatureBImpl @Inject constructor(
+    private val controller: NavController
+) : FeatureBRouter {
+    override fun navToFeatureA() {
+        controller.navigate(R.id.action_featureB_to_featureA)
+    }
+}
+</code></pre>
+
+<p>4: Appモジュール内にDIの為のモジュールを作成し、Routerモジュールを配布する。</p>
+
+<pre><code class="language-kotlin">// RouterModule.kt in AppModule
+@Module
+@InstallIn(FragmentComponent::class)
+class RouterModule {
+    @Provides
+    fun provideNavController(fragment: Fragment): NavController {
+        return fragment.findNavController()
+    }
+
+    @Provides
+    fun provideFeatureARouter(impl: FeatureARouterImpl): FeatureARouter = impl
+
+    @Provides
+    fun provideFeatureBRouter(impl: FeatureBRouterImpl): FeatureBRouter = impl
+}
+</code></pre>
+
+<p>5: 使用するFeatureモジュール内の各フラグメントで受け取る。</p>
+
+<pre><code class="language-kotlin">// FeatureAFragment.kt
+@AndroidEntryPoint
+class FeatureAFragment : Fragment() {
+    @Inject lateinit var router: FeatureARouter
+    
+    // 画面遷移
+    router.navToFeatureB()
+}
+</code></pre>
+
+<pre><code class="language-kotlin">// FeatureBFragment.kt
+@AndroidEntryPoint
+class FeatureBFragment : Fragment() {
+    @Inject lateinit var router: FeatureBRouter
+}
+</code></pre>
+
+<p>こんな感じの流れでマルチモジュール間での画面遷移を実装することができます。</p>
+
+<h3 id="extra-safeargsについて">Extra: Safeargsについて</h3>
+
+<p>上記の方法だと、ビルド時にsafeArgsのためのクラスがRouterモジュール内にしか自動生成されず、Featureモジュール内での受取のためのクラスが生成されません。<br />
+そのため、safeArgsをサポートしたい場合は受取側のFeatureモジュール内にsafeargsを用いたnav_graphを追加で作成する必要があります。<br />
+<a href="https://github.com/Index197511/MySongBank" title="MySongBank">使用例</a>に実際に使用している例があるので是非参考にしてみてください。</p>
+
+              <hr>
+              <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div>
+            </div>
+          </div>
+          <hr>
+        <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div>
+        </div>
+      </div>
+      
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="https://index197511.github.io/blog/js/docs.min.js"></script>
+<script src="https://index197511.github.io/blog/js/main.js"></script>
+
+<script src="https://index197511.github.io/blog/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Index197511 website</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-jp</language>
-    <lastBuildDate>Fri, 18 Sep 2020 09:16:33 +0900</lastBuildDate>
+    <lastBuildDate>Wed, 23 Sep 2020 08:35:00 +0900</lastBuildDate>
     
 	<atom:link href="https://index197511.github.io/blog/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Multimodule Navigation</title>
+      <link>https://index197511.github.io/blog/2020/09/23/multimodule-navigation/</link>
+      <pubDate>Wed, 23 Sep 2020 08:35:00 +0900</pubDate>
+      
+      <guid>https://index197511.github.io/blog/2020/09/23/multimodule-navigation/</guid>
+      <description>既存のアプリケーションをマルチモジュールにする際にNavigationComponentとFragmentを主体としたNavigationを</description>
+    </item>
     
     <item>
       <title>Dagger Hilt</title>
